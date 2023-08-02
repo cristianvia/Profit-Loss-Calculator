@@ -1,21 +1,20 @@
 const purchaseDate = document.querySelector(".date-of-purchase");
-const quantity = document.querySelector(".quantity");
+const investment = document.querySelector(".investment"); // Cambiado de 'quantity' a 'investment'
 const result = document.querySelector(".result");
 const currentPriceLabel = document.querySelector(".current-price");
 const buyPriceLabel = document.querySelector(".price-on-date");
 const submit = document.querySelector(".check");
-const process = document.querySelector(".timeout")
+const process = document.querySelector(".timeout");
 
 const currentPriceURL = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
 const historicalPriceURL = "https://api.coingecko.com/api/v3/coins/bitcoin/history?date=";
 
-
 const clickHandler = () => {
-    if (purchaseDate.value && quantity.value) {
+    if (purchaseDate.value && investment.value) {
         showProcess();
         fetchPrices();
     } else {
-        updateResult("Invalid Date or Quantity", "grey");
+        updateResult("Inversión o fecha inválida", "grey");
     }
 }
 
@@ -35,29 +34,32 @@ async function fetchPrices() {
         hideProcess();
     }, 1000);
 
-    buyPriceLabel.innerText = `Bought At: $${boughtAt}`;
-    currentPriceLabel.innerText = `Current Price: $${currentPrice}`;
+    buyPriceLabel.innerText = `Comprado a: $${boughtAt}`;
+    currentPriceLabel.innerText = `Precio actual: $${currentPrice}`;
 
-    calculateReturns(boughtAt, currentPrice, quantity.value)
+    const quantity = investment.value / boughtAt; // Convertir la inversión en Bitcoin en la fecha de compra
+    calculateReturns(boughtAt, currentPrice, quantity)
 }
 
 const calculateReturns = (buy, current, quantity) => {
-    if (buy > current) {
-        const loss = (buy - current) * quantity;
-        const lossPercentage = Math.round((loss / buy) * 100);
+    const initialInvestment = buy * quantity;
+    const currentValue = current * quantity;
 
-        updateResult(`Oops! You're down by ${lossPercentage}% with total loss of $${loss}`, "red");
+    if (initialInvestment > currentValue) {
+        const loss = initialInvestment - currentValue;
+        const lossPercentage = Math.round((loss / initialInvestment) * 100);
+
+        updateResult(`Oops! Estás en pérdidas un ${lossPercentage}% con una pérdida de $${loss}`, "red");
     } else {
-        const profit = (current - buy) * quantity;
-        const profitPercentage = Math.round((profit / buy) * 100);
+        const profit = currentValue - initialInvestment;
+        const profitPercentage = Math.round((profit / initialInvestment) * 100);
 
-        updateResult(`Kudos! You're in profit by ${profitPercentage}% with total profit of $${profit}`, "green")
-
+        updateResult(`Oh yeah! Estás en beneficios un ${profitPercentage}% con un beneficio de $${profit}`, "green")
     }
 }
 
-const formatDate = date => date.split("-").reverse().join("-");
 
+const formatDate = date => date.split("-").reverse().join("-");
 
 const updateResult = (message, message_color) => {
     result.innerText = message;
@@ -67,13 +69,11 @@ const updateResult = (message, message_color) => {
 const showProcess = () => {
     process.style.display = "block";
     result.style.display = "none";
-
 }
 
 const hideProcess = () => {
     process.style.display = "none";
     result.style.display = "block";
 }
-
 
 submit.addEventListener("click", clickHandler);

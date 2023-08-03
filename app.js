@@ -49,12 +49,12 @@ const calculateReturns = (buy, current, quantity) => {
         const loss = initialInvestment - currentValue;
         const lossPercentage = Math.round((loss / initialInvestment) * 100);
 
-        updateResult(`Oops! Estás en pérdidas un ${lossPercentage}% con una pérdida de $${loss}`, "red");
+        updateResult(`Oops! Estarías en pérdidas un ${lossPercentage}% con una pérdida de $${loss.toFixed(2)}`, "red");
     } else {
         const profit = currentValue - initialInvestment;
         const profitPercentage = Math.round((profit / initialInvestment) * 100);
 
-        updateResult(`Oh yeah! Estás en beneficios un ${profitPercentage}% con un beneficio de $${profit}`, "green")
+        updateResult(`Oh yeah! Estarías en beneficios un ${profitPercentage}% con un beneficio de $${profit.toFixed(2)}`, "green")
     }
 }
 

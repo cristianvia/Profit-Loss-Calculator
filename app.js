@@ -74,7 +74,7 @@ const updateResult = (message, message_color, investment, date, profitOrLoss) =>
     const formattedDate = new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
     // Crear el texto del tweet
-    const tweetText = `Si hubiera invertido $${investment.toFixed(2)} el ${formattedDate} ahora tendría $${totalInvestment.toFixed(2)}. Descubre cuanto tendrías tú en https://inversores.club/calculadora-btc/`;
+    const tweetText = `Si hubiera invertido ${investment.toFixed(2)}$ en #Bitcoin el ${formattedDate} ahora tendría ${totalInvestment.toFixed(2)}$. Descubre cuanto tendrías tú en https://inversores.club/calculadora-btc/`;
 
     // Actualizar el enlace del botón de Twitter para incluir el texto del tweet
     twitterButton.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;

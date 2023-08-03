@@ -5,6 +5,8 @@ const currentPriceLabel = document.querySelector(".current-price");
 const buyPriceLabel = document.querySelector(".price-on-date");
 const submit = document.querySelector(".check");
 const process = document.querySelector(".timeout");
+const twitterButton = document.querySelector(".twitter-button");
+
 
 const currentPriceURL = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
 const historicalPriceURL = "https://api.coingecko.com/api/v3/coins/bitcoin/history?date=";
@@ -44,36 +46,56 @@ async function fetchPrices() {
 const calculateReturns = (buy, current, quantity) => {
     const initialInvestment = buy * quantity;
     const currentValue = current * quantity;
+    const date = purchaseDate.value;
 
     if (initialInvestment > currentValue) {
         const loss = initialInvestment - currentValue;
-        const lossPercentage = Math.round((loss / initialInvestment) * 100);
+        const lossPercentage = ((loss / initialInvestment) * 100).toFixed(2);
 
-        updateResult(`Oops! Estarías en pérdidas un ${lossPercentage}% con una pérdida de $${loss.toFixed(2)}`, "red");
+        updateResult(`Oops! Estás en pérdidas un ${lossPercentage}% con una pérdida total de $${loss.toFixed(2)}`, "red", initialInvestment, date, -loss);
     } else {
         const profit = currentValue - initialInvestment;
-        const profitPercentage = Math.round((profit / initialInvestment) * 100);
+        const profitPercentage = ((profit / initialInvestment) * 100).toFixed(2);
 
-        updateResult(`Oh yeah! Estarías en beneficios un ${profitPercentage}% con un beneficio de $${profit.toFixed(2)}`, "green")
+        updateResult(`Oh yeah! Estás en beneficios un ${profitPercentage}% con un beneficio total de $${profit.toFixed(2)}`, "green", initialInvestment, date, profit)
     }
 }
 
 
 const formatDate = date => date.split("-").reverse().join("-");
 
-const updateResult = (message, message_color) => {
+const updateResult = (message, message_color, investment, date, profitOrLoss) => {
     result.innerText = message;
     result.style.color = message_color;
+
+    const totalInvestment = investment + profitOrLoss;
+
+    //cambio formato fecha a dd-mm-yy
+    const formattedDate = new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+    // Crear el texto del tweet
+    const tweetText = `Si hubiera invertido $${investment.toFixed(2)} el ${formattedDate} ahora tendría $${totalInvestment.toFixed(2)}. Descubre cuanto tendrías tú en https://inversores.club/calculadora-btc/`;
+
+    // Actualizar el enlace del botón de Twitter para incluir el texto del tweet
+    twitterButton.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
 }
+
+twitterButton.addEventListener("click", (event) => {
+    // Abrir el enlace en una nueva ventana
+    event.preventDefault();
+    window.open(event.target.href, "_blank");
+});
 
 const showProcess = () => {
     process.style.display = "block";
     result.style.display = "none";
+    twitterButton.style.display = "none";
 }
 
 const hideProcess = () => {
     process.style.display = "none";
     result.style.display = "block";
+    twitterButton.style.display = "inline-block";
 }
 
 submit.addEventListener("click", clickHandler);

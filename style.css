@@ -109,3 +109,18 @@ li {
     width: 90%;
   }
 }
+
+.twitter-button {
+  display:none;
+  background-color: #1DA1F2;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: large;
+  margin-top: 1rem;
+}
+
+.twitter-button:hover {
+  background-color: #0c85d0;
+}
